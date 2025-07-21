@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import {ERC20} from "@openzeppelin/token/ERC20/ERC20.sol";
 
@@ -25,6 +25,8 @@ import {ERC20} from "@openzeppelin/token/ERC20/ERC20.sol";
  * @notice ERC20 Noble Token.
  */
 contract Noble is ERC20 {
+    uint256 private constant INITIAL_SUPPLY = 1_000_000_000;
+
     /**
      * @notice Deploys the Noble token with initial supply minted to deployer.
      * @dev Initializes the ERC20 token with name "Noble" and symbol "NOBLE".
@@ -32,7 +34,7 @@ contract Noble is ERC20 {
      *      The initial supply is adjusted for the token's decimal places (18 decimals).
      */
     constructor() ERC20("Noble", "NOBLE") {
-        _mint(msg.sender, 1_000_000_000 * 10 ** decimals());
+        _mint(msg.sender, INITIAL_SUPPLY * 10 ** decimals());
     }
 
     /**
