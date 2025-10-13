@@ -2,7 +2,7 @@
 
 ## Overview
 
-$NOBLE is an ERC20 token initially deployed on Ethereum mainnet with the end goal of migrating to the Noble AppLayer.
+$NOBLE is an ERC20 token initially deployed on Ethereum mainnet with the end goal of migrating to the Noble AppLayer – a high-throughput EVM network.
 
 **Contract Address (Ethereum Mainnet):** [`0xe995e5A3A4BF15498246D7620CA39f7409397326`](https://etherscan.io/address/0xe995e5a3a4bf15498246d7620ca39f7409397326)
 
@@ -17,7 +17,9 @@ $NOBLE is an ERC20 token initially deployed on Ethereum mainnet with the end goa
 
 ## Migration to Noble AppLayer
 
-This token is designed as a temporary deployment on Ethereum mainnet. The end goal is to migrate all holders to the Noble AppLayer. The contract includes a `burn()` function that allows token holders to burn their allocation, which will be used to verify balances during the creation of the genesis file for the Noble AppLayer launch.
+This token is designed as a temporary deployment on Ethereum mainnet. The end goal is for all holders to migrate their tokens to the Noble AppLayer. The contract includes a `burn()` function that allows token holders to burn their allocation, which will be used to verify balances during the creation of the genesis file for the Noble AppLayer launch. 
+
+All holders will be required to migrate their tokens from Ethereum mainnet to the Noble AppLayer. 
 
 ### Burn Mechanism
 
@@ -29,7 +31,7 @@ Token holders can call the `burn()` function to burn their entire balance. This 
 
 ## Smart Contract
 
-$NOBLE is implemented as a simple ERC20 token using OpenZeppelin's battle-tested contracts.
+$NOBLE is implemented as a simple ERC20 token using OpenZeppelin's battle-tested open-sourced contracts.
 
 ### Key Features
 
