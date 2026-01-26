@@ -17,7 +17,7 @@
  */
 pragma solidity 0.8.20;
 
-import {ERC20, ERC20Burnable} from "@openzeppelin/token/ERC20/extensions/ERC20Burnable.sol";
+import {ERC20} from "@openzeppelin/token/ERC20/ERC20.sol";
 import {IERC20} from "@openzeppelin/token/ERC20/IERC20.sol";
 import {Ownable} from "@openzeppelin/access/Ownable.sol";
 import {INobleBurner} from "./interface/INobleBurner.sol";
@@ -28,7 +28,7 @@ import {SafeERC20} from "@openzeppelin/token/ERC20/utils/SafeERC20.sol";
 /// @dev This contract wraps NOBLE tokens 1:1 for use in the auction. When AuctionNoble
 /// tokens are transferred, they are burned and the underlying NOBLE is sent to the burner
 /// contract for permanent removal from circulation.
-contract AuctionNoble is ERC20Burnable, Ownable {
+contract AuctionNoble is ERC20, Ownable {
     using SafeERC20 for IERC20;
 
     /// @notice The address of the underlying NOBLE token.
