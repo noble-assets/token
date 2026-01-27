@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 NASD Inc. All rights reserved.
+ * Copyright 2026 NASD Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -21,6 +21,7 @@ import {ERC20} from "@openzeppelin/token/ERC20/ERC20.sol";
 import {IERC20} from "@openzeppelin/token/ERC20/IERC20.sol";
 import {Ownable} from "@openzeppelin/access/Ownable.sol";
 import {INobleBurner} from "./interface/INobleBurner.sol";
+import {NobleBurner} from "./NobleBurner.sol";
 import {SafeERC20} from "@openzeppelin/token/ERC20/utils/SafeERC20.sol";
 
 /// @title AuctionNoble
@@ -30,6 +31,12 @@ import {SafeERC20} from "@openzeppelin/token/ERC20/utils/SafeERC20.sol";
 /// contract for permanent removal from circulation.
 contract AuctionNoble is ERC20, Ownable {
     using SafeERC20 for IERC20;
+
+    error NothingToMint();
+    error AlreadyMintedToAuction();
+    error NothingToRecover();
+
+    event Burned(address indexed from, uint256 amount);
 
     /// @notice The address of the underlying NOBLE token.
     address immutable NOBLE = 0xe995e5A3A4BF15498246D7620CA39f7409397326;
@@ -42,9 +49,8 @@ contract AuctionNoble is ERC20, Ownable {
 
     /// @notice Initializes the AuctionNoble wrapper token.
     /// @param _owner The address that will own this contract and can call admin functions.
-    /// @param _burner The address of the NobleBurner contract.
-    constructor(address _owner, address _burner) ERC20("AuctionNoble", "NOBLE") Ownable(_owner) {
-        BURNER = INobleBurner(_burner);
+    constructor(address _owner) ERC20("AuctionNoble", "NOBLE") Ownable(_owner) {
+        BURNER = new NobleBurner(NOBLE);
     }
 
     /// @notice Mints AuctionNoble tokens to the auction contract based on deposited NOBLE balance.
@@ -52,10 +58,10 @@ contract AuctionNoble is ERC20, Ownable {
     /// @param auction The address of the auction contract to receive the minted tokens.
     function mintToAuction(address auction) external onlyOwner {
         uint256 balance = IERC20(NOBLE).balanceOf(address(this));
-        require(balance > 0, "Nothing to mint");
-        require(!mintedToAuction, "Already minted to auction");
-        _mint(auction, balance);
+        if (balance == 0) revert NothingToMint();
+        if (mintedToAuction) revert AlreadyMintedToAuction();
         mintedToAuction = true;
+        _mint(auction, balance);
     }
 
     /// @notice Internal transfer hook that burns NOBLE on any transfer.
@@ -73,6 +79,8 @@ contract AuctionNoble is ERC20, Ownable {
         _burn(from, amount);
         IERC20(NOBLE).safeTransfer(address(BURNER), amount);
         BURNER.doBurn();
+
+        emit Burned(from, amount);
     }
 
     /// @notice Recovers unsold AuctionNoble tokens held by this contract.
@@ -80,7 +88,7 @@ contract AuctionNoble is ERC20, Ownable {
     /// Used to reclaim tokens that weren't sold in the auction.
     function recoverUnsold() external onlyOwner {
         uint256 held = balanceOf(address(this));
-        require(held > 0, "Nothing to recover");
+        if (held == 0) revert NothingToRecover();
         _burn(address(this), held);
         IERC20(NOBLE).safeTransfer(owner(), held);
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 NASD Inc. All rights reserved.
+ * Copyright 2026 NASD Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -27,7 +27,13 @@ import {INobleBurner} from "./interface/INobleBurner.sol";
 /// the entire balance of the calling contract.
 contract NobleBurner is INobleBurner {
     /// @notice The NOBLE token contract.
-    INoble immutable NOBLE = INoble(0xe995e5A3A4BF15498246D7620CA39f7409397326);
+    INoble immutable NOBLE;
+
+    /// @notice Constructs the NobleBurner contract.
+    /// @param _noble The address of the NOBLE token contract.
+    constructor(address _noble) {
+        NOBLE = INoble(_noble);
+    }
 
     /// @inheritdoc INobleBurner
     function doBurn() external {
