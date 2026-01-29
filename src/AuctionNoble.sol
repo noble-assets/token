@@ -49,7 +49,7 @@ contract AuctionNoble is ERC20, Ownable {
 
     /// @notice Initializes the AuctionNoble wrapper token.
     /// @param _owner The address that will own this contract and can call admin functions.
-    constructor(address _owner) ERC20("AuctionNoble", "NOBLE") Ownable(_owner) {
+    constructor(address _owner) ERC20("Noble Voucher", "NOBLEV") Ownable(_owner) {
         BURNER = new NobleBurner(NOBLE);
     }
 
