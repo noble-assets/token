@@ -35,6 +35,7 @@ contract AuctionNoble is ERC20, Ownable {
     error NothingToMint();
     error AlreadyMintedToAuction();
     error NothingToRecover();
+    error InvalidRecipient();
 
     event Burned(address indexed from, uint256 amount);
 
@@ -64,6 +65,14 @@ contract AuctionNoble is ERC20, Ownable {
         _mint(auction, balance);
     }
 
+    /// @notice Returns the total supply of the underlying NOBLE token.
+    /// @dev Overrides ERC20's totalSupply to reflect the NOBLE token's total supply,
+    /// providing visibility into the overall NOBLE circulation.
+    /// @return The total supply of NOBLE tokens.
+    function totalSupply() public view override returns (uint256) {
+        return IERC20(NOBLE).totalSupply();
+    }
+
     /// @notice Internal transfer hook that burns NOBLE on any transfer.
     /// @dev Overrides ERC20's _update to intercept transfers. Mints, burns, and transfers
     /// to this contract proceed normally. All other transfers burn the AuctionNoble and
@@ -84,12 +93,14 @@ contract AuctionNoble is ERC20, Ownable {
     }
 
     /// @notice Recovers unsold AuctionNoble tokens held by this contract.
-    /// @dev Burns the AuctionNoble and returns the underlying NOBLE to the owner.
+    /// @dev Burns the AuctionNoble and returns the underlying NOBLE to the specified address.
     /// Used to reclaim tokens that weren't sold in the auction.
-    function recoverUnsold() external onlyOwner {
+    /// @param to The address to receive the recovered NOBLE tokens.
+    function recoverUnsold(address to) external onlyOwner {
+        if (to == address(0)) revert InvalidRecipient();
         uint256 held = balanceOf(address(this));
         if (held == 0) revert NothingToRecover();
         _burn(address(this), held);
-        IERC20(NOBLE).safeTransfer(owner(), held);
+        IERC20(NOBLE).safeTransfer(to, held);
     }
 }

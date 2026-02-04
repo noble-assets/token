@@ -9,10 +9,9 @@ import {AuctionNoble} from "../src/AuctionNoble.sol";
 /// @notice Deploys the NobleBurner and AuctionNoble contracts.
 contract DeployAuctionNoble is Script {
     function run() external returns (AuctionNoble auctionNoble) {
-        address owner = vm.envAddress("OWNER");
         vm.startBroadcast();
 
-        auctionNoble = new AuctionNoble(owner);
+        auctionNoble = new AuctionNoble(msg.sender);
         console.log("AuctionNoble deployed at:", address(auctionNoble));
 
         vm.stopBroadcast();
